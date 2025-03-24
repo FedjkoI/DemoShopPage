@@ -14,7 +14,6 @@ export class DemoShopPage {
     continueButton: Locator;
     continueButtonCheckout: Locator;
     message: Locator;
-    country: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -38,14 +37,20 @@ export enum checoutOptions {
     guest = "guest"
 }
 
-// export enum country {
-//     Afganistan = "1",
-//     Belarus = "20",
-//     Grenada = "86",
-//     Italy = "105",
-//     Mali = "131",
-//     Latvia = "117"
-// }
+export enum country {
+    Afganistan = "1",
+    Belarus = "20",
+    Grenada = "86",
+    Italy = "105",
+    Mali = "131",
+    Latvia = "117"
+}
+
+export enum region {
+    Pļaviņas = "4152",
+    Talsi = "4196",
+    Rīga = '4163'
+}
 
 export class SignIn {
     readonly page: Page;
@@ -71,12 +76,18 @@ export class SignIn {
         this.region = page.locator('#input-payment-zone');
     }
 
+    async countrySelect(countrySelector: country) {
+        await this.page.locator(`//*[@id="input-payment-country"]`).selectOption(countrySelector);
+    }
+
+    async regionSelect(regionSelector: region) {
+        await this.page.locator(`#input-payment-zone`).selectOption(regionSelector);
+    }
     async fillInput(field:
         {
             firstName: string, lastName: string, email: string, telephone: string, address1: string,
-            city: string, postCode: string
+            city: string, postCode: string, countrySelector: country, regionSelector: region
         }) {
-   
         await this.firstName.waitFor();
         await this.firstName.fill(field.firstName);
         await this.lastName.fill(field.lastName);
@@ -85,9 +96,7 @@ export class SignIn {
         await this.address1.fill(field.address1);
         await this.city.fill(field.city);
         await this.postCode.fill(field.postCode);
-
+        await this.countrySelect(field.countrySelector);
+        await this.regionSelect(field.regionSelector);
     }
-    // async countrySelect(countrySelector: country) {
-    //     await this.page.locator(`//*[@id="input-payment-country"][value='${countrySelector}']`).check();
-    // }
 }
